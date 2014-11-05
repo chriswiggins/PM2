@@ -84,11 +84,8 @@ function createMockServer(cb) {
 }
 
 function startSomeApps(cb) {
-	console.log('starting apps2');
   cmd_pm2.connect(function() {
-  	console.log('connected');
     cmd_pm2.start('./test/fixtures/child.js', {instances : 4, name : 'child'}, function() {
-    	console.log('started');
       return cb();
     });
   });
