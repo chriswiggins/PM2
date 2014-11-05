@@ -84,8 +84,11 @@ function createMockServer(cb) {
 }
 
 function startSomeApps(cb) {
+	console.log('starting apps2');
   cmd_pm2.connect(function() {
+  	console.log('connected');
     cmd_pm2.start('./test/fixtures/child.js', {instances : 4, name : 'child'}, function() {
+    	console.log('started');
       return cb();
     });
   });
@@ -273,16 +276,19 @@ describe('Test remote PM2 actions', function() {
   });
 
   it('should delete all processes', function(done) {
-    cmd_pm2.delete('all', {}, function() {
-      startSomeApps(function() {
-        cmd_pm2.list(function(err, ret) {
-          ret.forEach(function(proc) {
-            proc.pm2_env.restart_time.should.eql(0);
+  	setTimeout(function(){
+  	  cmd_pm2.delete('all', {}, function() {
+        startSomeApps(function() {
+          cmd_pm2.list(function(err, ret) {
+            ret.forEach(function(proc) {
+              proc.pm2_env.restart_time.should.eql(0);
+            });
+            done();
           });
-          done();
         });
       });
-    });
+  	}, 2000);
+    
   });
 
   it('should test .remote', function(done) {
